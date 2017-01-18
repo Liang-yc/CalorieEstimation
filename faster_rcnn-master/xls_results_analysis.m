@@ -62,9 +62,9 @@ for j=1:length(class)
     end
 %     start=numOfxml;
 %     fprintf('%s-sum: %d     -train %d;test %d;name:%s;\n',class{j},numOfxml,start,numOfxml-start,xmlfile(start+1).name);
-    [~,~,xlsdata]  = xlsread('C:\workplace\faster_rcnn-master\result.xls',class{j});
+    [~,~,xlsdata]  = xlsread('result.xls',class{j});
     len=size(xlsdata,1);
-%     
+    
 %     for k=1:len
 %         if ~isempty(strfind(xmlfile(start+1).name,xlsdata{k,1}))%由于有可能部分图像没有进行检测，所以k不一定等于start+1
 % %             fprintf('start: %d ;name:%s;%s\n',k,xmlfile(start+1).name,xlsdata{k,1});
@@ -79,7 +79,7 @@ for j=1:length(class)
 %                     continue;
 %                 end
 %                 available=available+1;
-%                 sum=sum+volumes(j).data{l,2};
+%                 sum=sum+volumes(j).data{l,3};
 %                 estimate_sum=estimate_sum+volumes(j).data{l,6};
 %             end
 %             if available
@@ -108,7 +108,8 @@ for j=1:length(class)
                 end
                 err(counter)=volumes(j).data{l,6};counter=counter+1;
                 available=available+1;
-                sum=sum+volumes(j).data{l,2};
+%                 sum=sum+volumes(j).data{l,2};
+                sum=sum+volumes(j).data{l,3};
                 estimate_sum=estimate_sum+volumes(j).data{l,6};
             end
             if available

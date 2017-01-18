@@ -74,7 +74,7 @@
         temp=strcat(path,class{i});
         temp=strcat(temp,'\');
         d=dir(temp);
-        [~,~,xlsdata]  = xlsread('E:\food_with_vq\density_table.xls',class{i});
+        [~,~,xlsdata]  = xlsread('density.xls',class{i});
         xls_start=1;
         xlsdata_start=1;
         for j=2:size(xlsdata,1)
@@ -95,7 +95,8 @@
                 if isempty(volume)
                     volume=0;
                 end
-                xlswrite(save_xls,[xlsdata(j,:) class{i} temp_d(k).name volume],class{i},strcat('A',num2str(xls_start)));       %xlswrite(filename,A,sheet,xlRange)         
+%                 xlswrite(save_xls,[xlsdata(j,:) class{i} temp_d(k).name volume],class{i},strcat('A',num2str(xls_start)));       %xlswrite(filename,A,sheet,xlRange)  
+                xlswrite(save_xls,[xlsdata(j,:) temp_d(k).name volume],class{i},strcat('A',num2str(xls_start)));       %xlswrite(filename,A,sheet,xlRange)   
                 xls_start=xls_start+1;
             end
         end
