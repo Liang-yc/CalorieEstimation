@@ -19,7 +19,7 @@ Due to this project's code is mainly baesd on the Faster R-CNN, we only introduc
 1.`density.xls` : foods' density table;<br>
 2.`faster_rcnn_rec.m`: this file is used to estimate calorie;<br>
 3.`grabcut_mex.cpp` : this file is written by C and is used to calculate volume. Grabcut function in opencv is used;<br>
-4.`encv_mex.m` : compiling grabcut_mex.cpp; if your environment is different from us, modifying this file and recompiling it.<br>
+4.`opencv_mex.m` : compiling grabcut_mex.cpp; if your environment is different from us, modifying this file and recompiling it.<br>
 #Resources
 -----
 We use ECUSTFD to train and test Faster R-CNN. ECUSTFD is a free public food image dataset. ECUSTFD is available at this [github](https://github.com/Liang-yc/ECUSTFD-resized-) or [BaiduYun](http://pan.baidu.com/s/1o8qDnXC). <br>  
