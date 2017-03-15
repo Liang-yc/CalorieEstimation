@@ -28,7 +28,6 @@ Due to this project's code is mainly baesd on the Faster R-CNN, we only introduc
 ## Experiment Environment
 -----
 This project is tested on W7x64 with GTX1070. <br>
-2.
 ## Resources
 -----
 We use ECUSTFD to train and test Faster R-CNN. ECUSTFD is a free public food image dataset. ECUSTFD is available at this [github](https://github.com/Liang-yc/ECUSTFD-resized-) or [BaiduYun](http://pan.baidu.com/s/1o8qDnXC). <br>  
