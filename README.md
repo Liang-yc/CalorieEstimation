@@ -1,5 +1,5 @@
 # CalorieEstimation
-
+=====
 #Background
 ------
 Obesity is a medical condition in which excess body fat has accumulated to the extent that it may have a negative effect on health.  Obesity treatment requires the patients to eat healthy food and decrease the amount of daily calorie intake. For those patients, it is helpful that calories can be estimated from photos.<br><br>Many methods based on computer vision have been created to estimate calories. <br><br>
