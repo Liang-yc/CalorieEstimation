@@ -14,7 +14,8 @@ This project is used to estimate calories.To estimate calories, it requires the 
 ## Requirement:hardware
 -----
 
-1.Requirements for Fater R-CNN in Matlab;GPU with more than 2GB memeory(If you only want to test, a GPU with only 2GB memory is acceptable).<br>
+1.Requirements for Fater R-CNN in Matlab;<br>
+2.GPU with more than 2GB memeory(If you only want to test, a GPU with only 2GB memory is acceptable).<br>
 
 ## File contents
 -----
