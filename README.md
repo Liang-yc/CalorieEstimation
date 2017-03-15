@@ -14,8 +14,7 @@ This project is used to estimate calories.To estimate calories, it requires the 
 ## Requirement:hardware
 -----
 
-1.Requirements for Fater R-CNN in Matlab;<br>
-2.GPU with more than 2GB memeory(If you only want to test, a GPU with only 2GB memory is acceptable).<br>
+1.Requirements for Fater R-CNN in Matlab;GPU with more than 2GB memeory(If you only want to test, a GPU with only 2GB memory is acceptable).<br>
 
 ## File contents
 -----
@@ -26,7 +25,10 @@ Due to this project's code is mainly baesd on the Faster R-CNN, we only introduc
 4.`opencv_mex.m` : compiling grabcut_mex.cpp; if your environment is different from us, modifying this file and recompiling it.<br>
 5.`ECUSTFD_ORIGIN_IMAGE_TEST.m `: used for volume estimation in ECUSTFD with original image size;<br>
 6.`ECUSTFD_TEST.m `:  used for volume estimation in resized ECUSTFD;<br>
-
+## Experiment Environment
+-----
+This project is tested on W7x64 with GTX1070. <br>
+2.
 ## Resources
 -----
 We use ECUSTFD to train and test Faster R-CNN. ECUSTFD is a free public food image dataset. ECUSTFD is available at this [github](https://github.com/Liang-yc/ECUSTFD-resized-) or [BaiduYun](http://pan.baidu.com/s/1o8qDnXC). <br>  
