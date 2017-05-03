@@ -31,6 +31,6 @@ Due to this project's code is mainly baesd on the Faster R-CNN, we only introduc
 This project is tested on W7x64 with GTX1070. <br>
 ## Resources
 -----
-We use ECUSTFD to train and test Faster R-CNN. ECUSTFD is a free public food image dataset. ECUSTFD is available at this [github](https://github.com/Liang-yc/ECUSTFD-resized-) or [BaiduYun](http://pan.baidu.com/s/1o8qDnXC). <br>  
+We use ECUSTFD to train and test Faster R-CNN. ECUSTFD is a free public food image dataset. ECUSTFD is available at [github](https://github.com/Liang-yc/ECUSTFD-resized-) or [BaiduYun](http://pan.baidu.com/s/1o8qDnXC). <br>  
 If you just want to test Faster R-CNN. You can download the weighted network at this [website](http://pan.baidu.com/s/1pLEYCvL).
   
