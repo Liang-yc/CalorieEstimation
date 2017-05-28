@@ -44,7 +44,7 @@
     opts.test_scales            = 1000;
 
     %% -------------------- INIT_MODEL --------------------
-    model_dir                   = fullfile(pwd, 'output', 'faster_rcnn_final', 'faster_rcnn_VOC2007_ZF'); %% ZF
+    model_dir                   = fullfile(pwd, 'output', 'faster_rcnn_final', 'faster_rcnn_VOC2007_ZF_ECUSTFD_1vs1'); %% ZF
     proposal_detection_model    = load_proposal_detection_model(model_dir);
     proposal_detection_model.conf_proposal.test_scales = opts.test_scales;
     proposal_detection_model.conf_detection.test_scales = opts.test_scales;
@@ -86,16 +86,19 @@
             temp_d=dir(str);
             for k=1:length(temp_d)
                 top_filename=strcat(temp,temp_d(k).name);
+%                 top_filename='E:\resized_ECUSTFD\apple\apple006T(1).JPG';
                 side_filename=strrep(top_filename,'T(','S(');
                 if ~exist(side_filename,'file')
                     continue;
                 end
                 %fprintf('%s;%s\n',top_filename,side_filename);
+%                 tic
                 volume=faster_rcnn_rec(top_filename,side_filename,opts,proposal_detection_model,rpn_net,fast_rcnn_net);
+%                 toc
                 if isempty(volume)
                     volume=0;
                 end
-%                 xlswrite(save_xls,[xlsdata(j,:) class{i} temp_d(k).name volume],class{i},strcat('A',num2str(xls_start)));       %xlswrite(filename,A,sheet,xlRange)  
+                xlswrite(save_xls,[xlsdata(j,:) class{i} temp_d(k).name volume],class{i},strcat('A',num2str(xls_start)));       %xlswrite(filename,A,sheet,xlRange)  
                 xlswrite(save_xls,[xlsdata(j,:) temp_d(k).name volume],class{i},strcat('A',num2str(xls_start)));       %xlswrite(filename,A,sheet,xlRange)   
                 xls_start=xls_start+1;
             end

@@ -19,7 +19,7 @@ opts.test_scales            = 1000;
 %% -------------------- INIT_MODEL --------------------
 % model_dir                   = fullfile(pwd, 'output', 'faster_rcnn_final', 'faster_rcnn_VOC0712_vgg_16layers'); %% VGG-16
 model_dir                   = fullfile(pwd, 'output', 'faster_rcnn_final', 'faster_rcnn_VOC0712_ZF'); %% ZF
-model_dir                   = fullfile(pwd, 'output', 'faster_rcnn_final', 'faster_rcnn_VOC2007_ZF'); %% ZF
+model_dir                   = fullfile(pwd, 'output', 'faster_rcnn_final', 'faster_rcnn_VOC2007_ZF_ECUSTFD_1vs1'); %% ZF
 proposal_detection_model    = load_proposal_detection_model(model_dir);
 proposal_detection_model.conf_proposal.test_scales = opts.test_scales;
 proposal_detection_model.conf_detection.test_scales = opts.test_scales;
@@ -46,32 +46,33 @@ end
 %% -------------------- WARM UP --------------------
 % the first run will be slower; use an empty image to warm up
 
-for j = 1:2 % we warm up 2 times
-    im = uint8(ones(375, 500, 3)*128);
-    if opts.use_gpu
-        im = gpuArray(im);
-    end
-    [boxes, scores]             = proposal_im_detect(proposal_detection_model.conf_proposal, rpn_net, im);
-    aboxes                      = boxes_filter([boxes, scores], opts.per_nms_topN, opts.nms_overlap_thres, opts.after_nms_topN, opts.use_gpu);
-    if proposal_detection_model.is_share_feature
-        [boxes, scores]             = fast_rcnn_conv_feat_detect(proposal_detection_model.conf_detection, fast_rcnn_net, im, ...
-            rpn_net.blobs(proposal_detection_model.last_shared_output_blob_name), ...
-            aboxes(:, 1:4), opts.after_nms_topN);
-    else
-        [boxes, scores]             = fast_rcnn_im_detect(proposal_detection_model.conf_detection, fast_rcnn_net, im, ...
-            aboxes(:, 1:4), opts.after_nms_topN);
-    end
-end
+% for j = 1:2 % we warm up 2 times
+%     im = uint8(ones(375, 500, 3)*128);
+%     if opts.use_gpu
+%         im = gpuArray(im);
+%     end
+%     [boxes, scores]             = proposal_im_detect(proposal_detection_model.conf_proposal, rpn_net, im);
+%     aboxes                      = boxes_filter([boxes, scores], opts.per_nms_topN, opts.nms_overlap_thres, opts.after_nms_topN, opts.use_gpu);
+%     if proposal_detection_model.is_share_feature
+%         [boxes, scores]             = fast_rcnn_conv_feat_detect(proposal_detection_model.conf_detection, fast_rcnn_net, im, ...
+%             rpn_net.blobs(proposal_detection_model.last_shared_output_blob_name), ...
+%             aboxes(:, 1:4), opts.after_nms_topN);
+%     else
+%         [boxes, scores]             = fast_rcnn_im_detect(proposal_detection_model.conf_detection, fast_rcnn_net, im, ...
+%             aboxes(:, 1:4), opts.after_nms_topN);
+%     end
+% end
 
 %% -------------------- TESTING --------------------
-im_names = { '1 (1).jpg','apple1.jpg','banana15.jpg','bread8.jpg','apple001-1.jpg','grape002-34.jpg','mix001-4.jpg'};%,'001763.jpg', '004545.jpg', '000542.jpg', '000456.jpg'
+%im_names = { 'mix004T(1).jpg','apple017T(13).JPG','bread006S(2).JPG','grape002T(12).JPG','mango010T(10).jpg','fired_dough_twist005T(3).JPG','banana014S(4).JPG','peach003S(1).JPG','pear006S(3).JPG','qiwi008T(2).JPG','tomato004T(26).JPG','egg006T(6).JPG'};%,'001763.jpg', '004545.jpg', '000542.jpg', '000456.jpg'
+% im_names={'E:\resized_ECUSTFD\apple\apple006T(1).JPG','E:\resized_ECUSTFD\apple\apple006S(1).JPG'};
 % these images can be downloaded with fetch_faster_rcnn_final_model.m
-
+im_names={'IMG_20170519_153835.jpg'};
 running_time = [];
 for j = 1:length(im_names)
-    
-    im = imread(fullfile(pwd, im_names{j}));
-    
+% for j = 1:1
+%     im = imread(fullfile(pwd, im_names{j}));
+    im = imread(strcat('C:\workplace\faster_rcnn-master\datasets\VOCdevkit2007\VOC2007\JPEGImages\',im_names{j}));
     if opts.use_gpu
         im = gpuArray(im);
     end
@@ -96,8 +97,8 @@ for j = 1:length(im_names)
     end
     t_detection = toc(th);
     
-    fprintf('%s (%dx%d): time %.3fs (resize+conv+proposal: %.3fs, nms+regionwise: %.3fs)\n', im_names{j}, ...
-        size(im, 2), size(im, 1), t_proposal + t_nms + t_detection, t_proposal, t_nms+t_detection);
+%     fprintf('%s (%dx%d): time %.3fs (resize+conv+proposal: %.3fs, nms+regionwise: %.3fs)\n', im_names{j}, ...
+%         size(im, 2), size(im, 1), t_proposal + t_nms + t_detection, t_proposal, t_nms+t_detection);
     running_time(end+1) = t_proposal + t_nms + t_detection;
     
     % visualize

@@ -1,4 +1,4 @@
-function [volume,calorie]=faster_rcnn_rec(top,side,opts,proposal_detection_model,rpn_net,fast_rcnn_net)
+function [volume,calorie]=simple_faster_rcnn_rec(top,side,opts,proposal_detection_model,rpn_net,fast_rcnn_net)
 %% If the model has not been loaded, reload it with default paras.
 if isempty(proposal_detection_model)||isempty(rpn_net)||isempty(fast_rcnn_net)
     close all;
@@ -48,13 +48,6 @@ end
 %%---------Faster R-CNN Detection-----
 running_time = [];
 im_names={top,side};
-
-top_pixel=0;
-side_pixel=0;
-load food_info
-volume=0;
-calorie=zeros(1,20);
-
 for j = 1:length(im_names)
     
     im = imread(im_names{j});
@@ -123,7 +116,12 @@ end
 fprintf('mean time: %.3fs\n', mean(running_time));
 %%
 %%---------准备估算体积以及卡路里----------------
-tic
+
+top_pixel=0;
+side_pixel=0;
+load food_info
+volume=0;
+calorie=zeros(1,20);
 % fp=fopen('result.txt','w');
 if ~isempty(food{1}.boxes_cell{5})
     [~,pos]=max(food{1}.boxes_cell{5}(:,5));%选取可信度最高的硬币
@@ -131,45 +129,27 @@ if ~isempty(food{1}.boxes_cell{5})
     if ~isempty(food{2}.boxes_cell{5})
         [~,pos]=max(food{2}.boxes_cell{5}(:,5));%选取可信度最高的硬币
         side_pixel=double(2.5/ ((food{2}.boxes_cell{5}(pos,4)+food{2}.boxes_cell{5}(pos,3)-food{2}.boxes_cell{5}(pos,2)-food{2}.boxes_cell{5}(pos,1))/2)); % ceshitu bilixishu
-        %%食物配对函数
-        
+        %%食物配对函数      
         for i=1:size(food{1}.boxes_cell,1)
             if i==5||isempty(food{1}.boxes_cell{i})||isempty(food{2}.boxes_cell{i})
                 continue;
             end
-            [~,pos]=max(food{1}.boxes_cell{i}(:,5));%选取可信度最高的硬币
+            [~,pos]=max(food{1}.boxes_cell{i}(:,5));
             top_rect=double(food{1}.boxes_cell{i}(pos,1:4));
 %             for j=1:size(food{2}.boxes_cell{i},1)
-                [~,pos]=max(food{2}.boxes_cell{i}(:,5));%选取可信度最高的硬币
-                side_rect=double(food{2}.boxes_cell{i}(pos,1:4));
-%                 volume=grabcut_mex(top,[top_rect(1),top_rect(2),top_rect(3)-top_rect(1),top_rect(4)-top_rect(2)], ...
-%                                 side,[side_rect(1),side_rect(2),side_rect(3)-side_rect(1),side_rect(4)-side_rect(2)], ...
-%                                 food_info{i+1,2},top_pixel,side_pixel);
-                if strcmp(food_info{i+1,2},'column')
-                    top_pixel= min(top_pixel,(side_rect(2)-side_rect(4))*side_pixel/(top_rect(3)-top_rect(1)));%比例系数修正
-                    volume=(top_rect(3)-top_rect(1))*(top_rect(4)-top_rect(2))*(top_pixel*top_pixel) * (side_rect(3)-side_rect(1))*side_pixel;%体积估算：地面积乘以高
-                else 
-                    volume=grabcut_mex(top,[top_rect(1),top_rect(2),top_rect(3)-top_rect(1),top_rect(4)-top_rect(2)], ...
-                                side,[side_rect(1),side_rect(2),side_rect(3)-side_rect(1),side_rect(4)-side_rect(2)], ...
-                                food_info{i+1,2},top_pixel,side_pixel);
-                end
-                calorie(i)=volume*food_info{i+1,3};
-%                 fprintf(fp,'%s %f %d %d %d %d\r\n',food_info{i+1,1},calorie,uint16(top_rect));
-%                             volume=grabcut_mex(top,[top_rect(1),top_rect(2),top_rect(3)-top_rect(1),top_rect(4)-top_rect(2)], ...
-%                 side,[side_rect(1),side_rect(2),side_rect(3)-side_rect(1),side_rect(4)-side_rect(2)], ...
-%                 'column',top_pixel,side_pixel)
-%                             volume=grabcut_mex(top,[top_rect(1),top_rect(2),top_rect(3)-top_rect(1),top_rect(4)-top_rect(2)], ...
-%                 side,[side_rect(1),side_rect(2),side_rect(3)-side_rect(1),side_rect(4)-side_rect(2)], ...
-%                 'torus',top_pixel,side_pixel)
-%                             volume=grabcut_mex(top,[top_rect(1),top_rect(2),top_rect(3)-top_rect(1),top_rect(4)-top_rect(2)], ...
-%                 side,[side_rect(1),side_rect(2),side_rect(3)-side_rect(1),side_rect(4)-side_rect(2)], ...
-%                 'ellipsoid',top_pixel,side_pixel)
-%             end
+            [~,pos]=max(food{2}.boxes_cell{i}(:,5));
+            side_rect=double(food{2}.boxes_cell{i}(pos,1:4));             
+            top_pixel= min(top_pixel,(side_rect(2)-side_rect(4))*side_pixel/(top_rect(3)-top_rect(1)));%比例系数修正
+            volume=(top_rect(3)-top_rect(1))*(top_rect(4)-top_rect(2))*(top_pixel*top_pixel) * (side_rect(3)-side_rect(1))*side_pixel;%体积估算：地面积乘以高
+%             volume=grabcut_mex(top,[top_rect(1),top_rect(2),top_rect(3)-top_rect(1),top_rect(4)-top_rect(2)], ...
+%                             side,[side_rect(1),side_rect(2),side_rect(3)-side_rect(1),side_rect(4)-side_rect(2)], ...
+%                             food_info{i+1,2},top_pixel,side_pixel);
+            end
+            calorie(i)=volume*food_info{i+1,3};
         end
     end
 %     show_calorie(food{1}.boxes_cell, classes, 'voc',top,calorie);
 end
-toc
 % fclose(fp);
 % caffe.reset_all(); 
 % clear mex;
