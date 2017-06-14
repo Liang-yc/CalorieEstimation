@@ -6,7 +6,7 @@ This project is used to estimate calories.To estimate calories, it requires the 
 ## Food Calorie Estimation Method
 -----
 <div align="center"><img src="https://github.com/Liang-yc/images4readme/blob/master/flowchart.jpg"></div>
-The flowchart of our food calorie estimation method is shown in the figure. This method takes two images as its inputs: a top view and a side view of the food; each image includes a calibration object which is used to estimate image’s scale factor. Food(s) and calibration object are detected by object detection method called Faster R-CNN and each food’s counter is obtained by applying GrabCut algorithm. After that, we estimate each food's volume and calorie.
+The flowchart of our food calorie estimation method is shown in the figure. Our method includes 5 steps: image acquisition, object detection, image segmentation volume estimation and calorie estimation. The inputs are a top view and a side view of the food; each view includes a calibration object which is used to estimate scale factor. Food(s) and calibration object are detected by object detection method called Faster R-CNN and each food’s counter is obtained by applying GrabCut algorithm. After that, we estimate each food's volume and calorie.
 
 ## Requirement:software
 -----
