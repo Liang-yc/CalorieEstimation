@@ -3,6 +3,8 @@
 ------
 Obesity is a medical condition in which excess body fat has accumulated to the extent that it may have a negative effect on health.  Obesity treatment requires the patients to eat healthy food and decrease the amount of daily calorie intake. For those patients, it is helpful that calories can be estimated from photos.<br><br>Many methods based on computer vision have been created to estimate calories. <br><br>
 This project is used to estimate calories.To estimate calories, it requires the userto take a top view and a side view of the food before eatingwith his/her smart phone. Each images used to estimate mustinclude One Yuan coin. For the top view, we use the deeplearning algorithms to recognize the types of food and applyimage segmentation to identify the food’s contour in thephotos. So as the side view. then, the volumes of each foodis calculated based on the calibration objects in the images.In the end, the calorie of each food is obtained by searchingdensity table and nutrition table. In order to get better results, we choose to use Faster Region-based Convolutional NeuralNetworks (Faster R-CNN) to detect objects and GrabCut as segmentation algorithms.
+## Food Calorie Estimation Method
+-----
 
 ## Requirement:software
 -----
