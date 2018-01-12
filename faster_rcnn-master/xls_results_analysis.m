@@ -4,8 +4,8 @@
 %上面所占百分比可根据自己的数据集修改，如果数据集比较少，test和val可少一些
 %%
 %注意修改下面四个值
-xmlfilepath='C:\workplace\faster_rcnn-master\datasets\VOCdevkit2007\VOC2007\Annotations\';
-txtsavepath='C:\workplace\faster_rcnn-master\datasets\VOCdevkit2007\VOC2007\ImageSets\Main\';
+xmlfilepath='F:\faster_rcnn_4_windows\data\VOCdevkit2007\VOC2007\Annotations\';
+txtsavepath='F:\faster_rcnn_4_windows\data\VOCdevkit2007\VOC2007\ImageSets\Main\';
 trainval_percent=0.5;%trainval占整个数据集的百分比，剩下部分就是test所占百分比
 train_percent=0.5;%train占trainval的百分比，剩下部分就是val所占百分比
 
@@ -63,49 +63,50 @@ for j=1:length(class)
 %     start=numOfxml;
 %     fprintf('%s-sum: %d     -train %d;test %d;name:%s;\n',class{j},numOfxml,start,numOfxml-start,xmlfile(start+1).name);
     [~,~,xlsdata]  = xlsread('result.xls',class{j});
-    [~,~,xlsdata]  = xlsread('C:\Users\lyc\Desktop\新建文件夹\result_4formulas.xls',class{j});
+%     [~,~,xlsdata]  = xlsread('C:\Users\lyc\Desktop\新建文件夹\result_4formulas.xls',class{j});
     len=size(xlsdata,1);
-    
+%     fprintf('%d-%d',start,numOfxml);
     for k=1:len
         if ~isempty(strfind(xmlfile(start+1).name,xlsdata{k,1}))%由于有可能部分图像没有进行检测，所以k不一定等于start+1
 %             fprintf('start: %d ;name:%s;%s\n',k,xmlfile(start+1).name,xlsdata{k,1});
             volumes(j).class=cls_name;
             volumes(j).data=xlsdata(1:(k-1),:);
-            
+%             fprintf('%s\n',xmlfile(k).name)
             available=0;
-            sum=0;
-            mass=0;
-            estimate_sum=0;
-            estimate_mass=0;
+            error=0;
+            real_mass=0;
+            real_volume=0;
+            estimate_volume=0;
+%             density(j)=0;
+%             beta(j)=0;
             for l=1:size(volumes(j).data,1)
                 if volumes(j).data{l,6}==0
                     continue;
                 end
                 available=available+1;
-                sum=sum+volumes(j).data{l,3};
-                mass=mass+volumes(j).data{l,4};%质量
-                estimate_sum=estimate_sum+volumes(j).data{l,6};
-                estimate_mass=estimate_mass+volumes(j).data{l,6};
+%                 error=error+(volumes(j).data{l,6}/volumes(j).data{l,3}-1);
+                real_mass=real_mass+volumes(j).data{l,4};%真实质量
+                real_volume=real_volume+volumes(j).data{l,3};%真实体积
+                %直接真实质量除以估算体积可能结果不太好。
+                estimate_volume=estimate_volume+volumes(j).data{l,6};
+%                 density(j)=density(j)+(volumes(j).data{l,4}/volumes(j).data{l,3});
+%                 beta(j)=beta(j)+(volumes(j).data{l,6}/volumes(j).data{l,3});
             end
             if available
-                sum=sum/available;
-                mass=mass/available;
-                estimate_sum=estimate_sum/available;
-                estimate_mass=estimate_mass/available;
-                error=(estimate_sum-sum)/sum*100.0;
-                density(j)=mass/estimate_mass;
+                density(j)=real_mass/real_volume;
+                beta(j)=real_volume/estimate_volume;
                 %样本类别，训练样本数目，有效的体积估算数目，
-                fprintf('%s & %d  & %d & %3.2f & %3.2f & %3.2f',volumes(j).class,start, available*2);
+%                 fprintf('%s & %d  & %d & %3.2f & %3.2f & %3.2f',volumes(j).class,start, available*2);
 %                 fprintf('训练: 类别：%s 训练样本数目%d 测试样本数目%d 有效的训练样本组数%d 平均真实体积%3.2f 平均估算体积%3.2f 误差%3.2f \n',volumes(j).class,start,numOfxml-start, available, sum, estimate_sum,error);
 %                 fprintf('%3.2f \n',error);
             end
             break;
         end
     end
-    alpha(j)=1.0/(error/100+1);
+%     beta(j)=1.0/(error/100+1);
 %     density(j)=1.0/(mass_error/100+1);
     volume=[];
-    fprintf('%3.2f &%3.2f &',alpha(j),density(j));
+    fprintf('%s %3.2f &%3.2f \r\n',volumes(j).class,beta(j),density(j));
     for k=1:len
         if ~isempty(strfind(xmlfile(start+1).name,xlsdata{k,1}))%由于有可能部分图像没有进行检测，所以k不一定等于start+1
 %             fprintf('start: %d ;name:%s;%s\n',k,xmlfile(start+1).name,xlsdata{k,1});
@@ -113,31 +114,39 @@ for j=1:length(class)
             volumes(j).data=xlsdata(k:len,:);
             
             available=0;
-            sum=0;
-            mass=0;
-            estimate_sum=0;
-            estimate_mass=0;
+            mean_real_volume=0;
+            mean_real_mass=0;
+            mean_est_volume=0;
+            mean_est_mass=0;
+            volume_error=0;
+            mass_error=0;
             for l=1:size(volumes(j).data,1)
                 if volumes(j).data{l,6}==0
                     continue;
                 end
-                err(counter)=volumes(j).data{l,6};counter=counter+1;
+%                 err(counter)=volumes(j).data{l,6};
+%                 counter=counter+1;
                 available=available+1;
 %                 sum=sum+volumes(j).data{l,2};
-                sum=sum+volumes(j).data{l,3};
-                mass=mass+volumes(j).data{l,4};%质量
-                estimate_sum=estimate_sum+volumes(j).data{l,6};
-                estimate_mass=estimate_mass+volumes(j).data{l,6};
+                mean_real_volume=mean_real_volume+volumes(j).data{l,3};
+                mean_real_mass=mean_real_mass+volumes(j).data{l,4};%质量
+                mean_est_volume=mean_est_volume+volumes(j).data{l,6};
+                mean_est_mass=mean_est_mass+beta(j)*volumes(j).data{l,6};
+                volume_error=volume_error+(beta(j)*volumes(j).data{l,6}/volumes(j).data{l,3}-1);
+                mass_error=mass_error+(density(j)*beta(j)*volumes(j).data{l,6}/volumes(j).data{l,4}-1);
             end
             if available
-                sum=sum/available;
-                mass=mass/available;
-                estimate_sum=alpha(j)*estimate_sum/available;
-                estimate_mass=density(j)*estimate_mass/available;
-                error=(estimate_sum-sum)/sum*100.0;
-                mass_error=(estimate_mass-mass)/mass*100.0;
-                
-                fprintf('%d & %d & %3.2f & %3.2f & %3.2f& %3.2f & %3.2f & %3.2f \\\\ \n',numOfxml-start, available*2, sum, estimate_sum,error,mass,estimate_mass,mass_error);
+                volume_error=volume_error/available*100.0;
+                mass_error=mass_error/available*100.0;
+                mean_real_volume=mean_real_volume/available;
+                mean_real_mass=mean_real_mass/available;
+                mean_est_volume=mean_est_volume/available;
+                mean_est_mass=mean_est_mass/available;
+%                 error=(estimate_sum-sum)/sum*100.0;
+%                 mass_error=(estimate_mass-mass)/mass*100.0;
+                fprintf('%s & %d & %3.2f & %3.2f & %3.2f& %3.2f & %3.2f & %3.2f \\\\ \n',volumes(j).class, available*2, mean_real_volume,mean_est_volume,volume_error,mean_real_mass,mean_est_mass,mass_error);
+
+%                 fprintf('%d & %d & %3.2f & %3.2f & %3.2f& %3.2f & %3.2f & %3.2f \\\\ \n',numOfxml-start, available*2, mean_real_volume,mean_est_volume,volume_error,mean_real_mass,mean_est_mass,mass_error);
 %                 fprintf('测试: 类别：%s 训练样本数目%d 测试样本数目%d 有效的测试样本组数%d 平均真实体积%3.2f 平均估算体积%3.2f 误差%3.2f  \n',volumes(j).class,start,numOfxml-start, available, sum, estimate_sum,error);
 %                 fprintf('%3.2f\n',error);
 %                 err((counter-available):(counter-1))=err((counter-available):(counter-1))./sum-1;
