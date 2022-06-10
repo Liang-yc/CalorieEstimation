@@ -18,7 +18,7 @@ The flowchart of our food calorie estimation method is shown in the figure. Our 
 ## Requirement:hardware
 -----
 
-1.Requirements for Fater R-CNN in Matlab;<br>
+1.Requirements for Faster R-CNN in Matlab;<br>
 2.GPU with more than 2GB memeory(If you only want to test, a GPU with only 2GB memory is acceptable).<br>
 
 ## File contents
